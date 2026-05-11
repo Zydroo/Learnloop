@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+.next/
+dist/
+build/
+*.log
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+
+# Project Specific
+backend/scratch/
+backend/scratch_*.js
+machine_learning/student_data.csv
