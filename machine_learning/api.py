@@ -10,12 +10,31 @@ CORS(app)
 # Load the trained model
 MODEL_PATH = 'dropout_model.pkl'
 
+def force_retrain():
+    print("🔄 Version mismatch detected or model missing. Force retraining...")
+    try:
+        from train_model import train_model
+        train_model()
+        print("✅ Model retrained successfully.")
+    except Exception as e:
+        print(f"❌ Failed to retrain model: {e}")
+
 if os.path.exists(MODEL_PATH):
-    model = joblib.load(MODEL_PATH)
-    print("Model loaded successfully.")
+    try:
+        model = joblib.load(MODEL_PATH)
+        # Test if it actually works to catch the attribute error early
+        import numpy as np
+        test_features = np.zeros((1, 8))
+        model.predict_proba(test_features)
+        print("✅ Model loaded and verified successfully.")
+    except Exception as e:
+        print(f"⚠️ Model load error: {e}")
+        force_retrain()
+        model = joblib.load(MODEL_PATH)
 else:
-    print(f"Warning: {MODEL_PATH} not found. Please train the model first.")
-    model = None
+    print(f"Warning: {MODEL_PATH} not found.")
+    force_retrain()
+    model = joblib.load(MODEL_PATH)
 
 @app.route('/predict', methods=['POST'])
 def predict_risk():
