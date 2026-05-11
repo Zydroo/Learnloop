@@ -11,13 +11,22 @@ CORS(app)
 MODEL_PATH = 'dropout_model.pkl'
 
 def force_retrain():
-    print("🔄 Version mismatch detected or model missing. Force retraining...")
+    print("🔄 Version mismatch detected, data missing, or model corrupted. Force retraining...")
     try:
+        # Check if data exists, if not generate it
+        if not os.path.exists('student_data.csv'):
+            print("📊 Student data missing. Generating synthetic dataset...")
+            from generate_dataset import generate_dataset
+            generate_dataset()
+            print("✅ Dataset generated.")
+            
         from train_model import train_model
         train_model()
         print("✅ Model retrained successfully.")
     except Exception as e:
         print(f"❌ Failed to retrain model: {e}")
+        import traceback
+        traceback.print_exc()
 
 if os.path.exists(MODEL_PATH):
     try:
